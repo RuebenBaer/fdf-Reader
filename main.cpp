@@ -224,10 +224,8 @@ size_t SchlussklammerFinden(std::string Zeile, size_t strt)
 			return std::string::npos;
 		if(found > 0)
 		{
-			std::cout<<"Zeile[found - 1] = "<<Zeile[found - 1]<<"\n";
 			if(Zeile[found - 1] == '\\')
 			{
-				std::cout<<"Inkrementiere start ("<<start<<") => ";
 				start = found + 1;
 				std::cout<<start<<"\n";
 			}
