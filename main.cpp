@@ -7,21 +7,21 @@
 #include <vector>
 #include <iomanip>
 
-void FDFAuslesen(char* DateiName);
-void UmfangAuslesen(std::ifstream &file);
-void FlaecheAuslesen(std::ifstream &file);
-void LaengeAuslesen(std::ifstream &file);
-
-size_t SchlussklammerFinden(std::string Zeile, size_t start);
-
-void BildschirmAusgabe(void);
-bool DateiAusgabe(void);
-
 typedef struct{
 	std::string bez;
 	float wert;
 	std::string dim;
 }bezWertPaar;
+
+void FDFAuslesen(char* DateiName);
+void UmfangAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste);
+void FlaecheAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste);
+void LaengeAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste);
+
+size_t SchlussklammerFinden(std::string Zeile, size_t start);
+
+void BildschirmAusgabe(std::vector<bezWertPaar> &liste);
+bool DateiAusgabe(void);
 
 bezWertPaar BezeichnungWertTrennen(std::string eingabe);
 
@@ -35,22 +35,6 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	std::string antwort;
-	bool speichern;
-	std::cout<<"Ergebnis(se) speichern? [j/n]: ";
-	std::cin>>antwort;
-	if((antwort.compare("j") == 0)||(antwort.compare("J") == 0))
-	{
-		std::cout<<"Ergebnis wird gespeichert\n";
-		speichern = true;
-	}
-	else
-	{
-		std::cout<<"Keine Speicherung der Ergebnisse\n";
-		speichern = false;
-	}
-	
-	if(speichern)std::cout<<"jajaja\n";
 	FDFAuslesen(argv[1]);
 	
 	system("PAUSE");
@@ -72,17 +56,21 @@ void FDFAuslesen(char* DateiName)
 	}
 	std::cout<<"geoeffnet\n";
 	
-	UmfangAuslesen(file);
+	std::vector<bezWertPaar> liste;
+	
+	UmfangAuslesen(file, liste);
 	
 	file.clear();
 	file.seekg(0L, file.beg); //Zeiger an Anfang von file setzen
 	
-	FlaecheAuslesen(file);
+	FlaecheAuslesen(file, liste);
 	
 	file.clear();
 	file.seekg(0L, file.beg); //Zeiger an Anfang von file setzen
+	
+	LaengeAuslesen(file, liste);
 
-	BildschirmAusgabe();
+	BildschirmAusgabe(liste);
 	DateiAusgabe();
 	
 	file.close();
@@ -90,7 +78,7 @@ void FDFAuslesen(char* DateiName)
 	return;
 }
 
-void UmfangAuslesen(std::ifstream &file)
+void UmfangAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 {
 	char leseZeile[4001];
 	std::string Zeile;
@@ -131,7 +119,7 @@ void UmfangAuslesen(std::ifstream &file)
 	}
 }
 
-void FlaecheAuslesen(std::ifstream &file)
+void FlaecheAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 {
 	char leseZeile[4001];
 	std::string Zeile;
@@ -172,7 +160,7 @@ void FlaecheAuslesen(std::ifstream &file)
 	}
 }
 
-void LaengeAuslesen(std::ifstream &file)
+void LaengeAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 {
 	char leseZeile[4001];
 	std::string Zeile;
@@ -253,12 +241,10 @@ bezWertPaar BezeichnungWertTrennen(std::string eingabe)
 	{
 		ausgabe.bez = eingabe.substr(0, found);
 		eingabe = eingabe.substr(found + trenner.length());
-			std::cout<<"eingabe.substr = "<<eingabe<<"\n";
 	}
 	
 	foundEnde = eingabe.find(' ');
 	str_wert = eingabe.substr(0, foundEnde);
-		std::cout<<"str_wert = "<<str_wert<<"\n";
 	std::replace(str_wert.begin(), str_wert.end(), ',', '.');
 	ausgabe.wert = atof(str_wert.c_str()); 
 	
@@ -267,7 +253,7 @@ bezWertPaar BezeichnungWertTrennen(std::string eingabe)
 	return ausgabe;
 }
 
-void BildschirmAusgabe(void)
+void BildschirmAusgabe(std::vector<bezWertPaar> &liste)
 {
 	std::cout<<std::setw(56)<<char(218)<<std::setfill(char(196))<<std::setw(20)<<char(194);
 	std::cout<<std::setw(16)<<char(191)<<"\n";
