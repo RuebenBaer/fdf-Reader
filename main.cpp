@@ -21,7 +21,7 @@ void LaengeAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste);
 size_t SchlussklammerFinden(std::string Zeile, size_t start);
 
 void BildschirmAusgabe(std::vector<bezWertPaar> &liste);
-bool DateiAusgabe(void);
+bool DateiAusgabe(char* DateiName, std::vector<bezWertPaar> &liste);
 
 bezWertPaar BezeichnungWertTrennen(std::string eingabe);
 
@@ -71,7 +71,7 @@ void FDFAuslesen(char* DateiName)
 	LaengeAuslesen(file, liste);
 
 	BildschirmAusgabe(liste);
-	DateiAusgabe();
+	DateiAusgabe(DateiName, liste);
 	
 	file.close();
 
@@ -108,9 +108,8 @@ void UmfangAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 					if(foundEnde != std::string::npos)
 					{
 						subZeile = Zeile.substr(found+1, foundEnde - found - 1);
-						std::cout<<"Ausgabe Polylinienmessung:\n";
 						paareContainer = BezeichnungWertTrennen(subZeile);
-						std::cout<<"\t"<<paareContainer.bez<<"\t"<<paareContainer.wert<<"\t"<<paareContainer.dim<<"\n\n";
+						liste.push_back(paareContainer);
 					}
 				}
 				
@@ -149,9 +148,8 @@ void FlaecheAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 					if(foundEnde != std::string::npos)
 					{
 						subZeile = Zeile.substr(found+1, foundEnde - found - 1);
-						std::cout<<"Ausgabe Flaechennmessung:\n";
 						paareContainer = BezeichnungWertTrennen(subZeile);
-						std::cout<<"\t"<<paareContainer.bez<<"\t"<<paareContainer.wert<<"\t"<<paareContainer.dim<<"\n\n";
+						liste.push_back(paareContainer);
 					}
 				}
 				
@@ -190,9 +188,8 @@ void LaengeAuslesen(std::ifstream &file, std::vector<bezWertPaar> &liste)
 					if(foundEnde != std::string::npos)
 					{
 						subZeile = Zeile.substr(found+1, foundEnde - found - 1);
-						std::cout<<"Ausgabe Laengennmessung:\n";
 						paareContainer = BezeichnungWertTrennen(subZeile);
-						std::cout<<"\t"<<paareContainer.bez<<"\t"<<paareContainer.wert<<"\t"<<paareContainer.dim<<"\n\n";
+						liste.push_back(paareContainer);
 					}
 				}
 				
@@ -255,87 +252,100 @@ bezWertPaar BezeichnungWertTrennen(std::string eingabe)
 
 void BildschirmAusgabe(std::vector<bezWertPaar> &liste)
 {
-	std::cout<<std::setw(56)<<char(218)<<std::setfill(char(196))<<std::setw(20)<<char(194);
-	std::cout<<std::setw(16)<<char(191)<<"\n";
-	std::cout.fill(' ');
-	std::cout<<std::setw(56)<<char(179)<<std::setw(19)<<"Kills       "<<char(179)<<std::setw(15)<<"Deaths    "<<char(179)<<"\n";
 	std::cout.fill(char(196));
-	std::cout<<char(218)<<std::setw(34)<<char(194)<<std::setw(14)<<char(194)<<std::setw(7)<<char(197);
-	std::cout<<std::setw(10)<<char(194)<<std::setw(10)<<char(197);
-	std::cout<<std::setw(8)<<char(194)<<std::setw(8)<<char(197);
-	std::cout<<std::setw(10)<<char(194)<<std::setw(13)<<char(191)<<"\n";
+	std::cout<<char(218);
+	std::cout<<std::setw(34)<<char(194);
+	std::cout<<std::setw(14)<<char(194);
+	std::cout<<std::setw(9)<<char(191)<<"\n";
 	
 	std::cout.fill(' ');
-	
-	std::cout<<char(179)<<std::setw(32)<<"Name"<<" "<<char(179);
-	std::cout<<std::setw(12)<<"ID"<<" "<<char(179);
-	std::cout<<std::setw(5)<<"MMR"<<" "<<char(179);
-	std::cout<<std::setw(8)<<"by me "<<" "<<char(179);
-	std::cout<<std::setw(8)<<"by mate"<<" "<<char(179);
-	std::cout<<std::setw(6)<<"me "<<" "<<char(179);
-	std::cout<<std::setw(6)<<"mate"<<" "<<char(179);
-	std::cout<<std::setw(8)<<"Bounty"<<" "<<char(179);
-	std::cout<<std::setw(11)<<"Extracted"<<" "<<char(179)<<"\n";
+	std::cout<<char(179)<<std::setw(32)<<"Bezeichnung"<<" "<<char(179);
+	std::cout<<std::setw(12)<<"Menge"<<" "<<char(179);
+	std::cout<<std::setw(7)<<"Dim"<<" "<<char(179)<<"\n";
 	
 	std::cout.fill(char(196));
-	std::cout<<char(192)<<std::setw(34)<<char(193);
+	std::cout<<char(195);
+	std::cout<<std::setw(34)<<char(197);
+	std::cout<<std::setw(14)<<char(197);
+	std::cout<<std::setw(9)<<char(180)<<"\n";
+	
+	std::cout.fill(' ');
+	for(std::vector<bezWertPaar>::iterator it = liste.begin(); it != liste.end(); it++)
+	{
+		std::cout<<char(179)<<std::setw(32)<<(it)->bez<<" "<<char(179);
+		std::cout<<std::setw(12)<<(it)->wert<<" "<<char(179);
+		std::cout<<std::setw(7)<<(it)->dim<<" "<<char(179)<<"\n";
+	}
+	
+	std::cout.fill(char(196));
+	std::cout<<char(192);
+	std::cout<<std::setw(34)<<char(193);
 	std::cout<<std::setw(14)<<char(193);
-	std::cout<<std::setw(7)<<char(193);
-	std::cout<<std::setw(10)<<char(193);
-	std::cout<<std::setw(10)<<char(193);
-	std::cout<<std::setw(8)<<char(193);
-	std::cout<<std::setw(8)<<char(193);
-	std::cout<<std::setw(10)<<char(193);
-	std::cout<<std::setw(13)<<char(217)<<"\n\n";
-	std::cout.fill(' ');
+	std::cout<<std::setw(9)<<char(217)<<"\n";
+	
+	return;
 }
 
-bool DateiAusgabe(void)
+bool DateiAusgabe(char* DateiName, std::vector<bezWertPaar> &liste)
 {
-	std::ofstream ausgabe;
+	std::ofstream ausgabe, csvAusgabe;
 	ausgabe.open("./BildschirmSpiegel.txt", std::ios::out|std::ios::app|std::ios::ate);
 	if(!ausgabe.good())
 	{
 		std::cerr<<"Bildschirmspiegel konnte nicht geoeffnet werden\n";
 		return false;
 	}
-	
-	ausgabe<<std::setw(56)<< char(43) <<std::setfill(char(45))<<std::setw(20)<<char(43);
-	ausgabe<<std::setw(16)<<char(43)<<"\n";
-	ausgabe.fill(' ');
-	ausgabe<<std::setw(56)<<char(124)<<std::setw(19)<<"Kills       "<<char(124)<<std::setw(15)<<"Deaths    "<<char(124)<<"\n";
-	ausgabe.fill(char(45));
-	ausgabe<<char(43)<<std::setw(34)<<char(43)<<std::setw(14)<<char(43)<<std::setw(7)<<char(43);
-	ausgabe<<std::setw(10)<<char(43)<<std::setw(10)<<char(43);
-	ausgabe<<std::setw(8)<<char(43)<<std::setw(8)<<char(43);
-	ausgabe<<std::setw(10)<<char(43)<<std::setw(13)<<char(43)<<"\n";
-	
-	ausgabe.fill(' ');
-	
-	ausgabe<<char(124)<<std::setw(32)<<"Name"<<" "<<char(124);
-	ausgabe<<std::setw(12)<<"ID"<<" "<<char(124);
-	ausgabe<<std::setw(5)<<"MMR"<<" "<<char(124);
-	ausgabe<<std::setw(8)<<"by me "<<" "<<char(124);
-	ausgabe<<std::setw(8)<<"by mate"<<" "<<char(124);
-	ausgabe<<std::setw(6)<<"me "<<" "<<char(124);
-	ausgabe<<std::setw(6)<<"mate"<<" "<<char(124);
-	ausgabe<<std::setw(8)<<"Bounty"<<" "<<char(124);
-	ausgabe<<std::setw(11)<<"Extracted"<<" "<<char(124)<<"\n";
+	csvAusgabe.open("./Ausgabe.csv", std::ios::out|std::ios::app|std::ios::ate);
+	if(!csvAusgabe.good())
+	{
+		std::cerr<<"Ausgabe.csv konnte nicht geoeffnet werden\n";
+		return false;
+	}	
+	csvAusgabe<<DateiName<<";\nBezeichnung;Menge;Dim;\n";
 	
 	ausgabe.fill(char(45));
-	ausgabe<<char(43)<<std::setw(34)<<char(43);
+	ausgabe<<char(43);
+	ausgabe<<std::setw(34)<<char(43);
 	ausgabe<<std::setw(14)<<char(43);
-	ausgabe<<std::setw(7)<<char(43);
-	ausgabe<<std::setw(10)<<char(43);
-	ausgabe<<std::setw(10)<<char(43);
-	ausgabe<<std::setw(8)<<char(43);
-	ausgabe<<std::setw(8)<<char(43);
-	ausgabe<<std::setw(10)<<char(43);
-	ausgabe<<std::setw(13)<<char(43)<<"\n\n";
-	ausgabe.fill(' ');
+	ausgabe<<std::setw(9)<<char(43)<<"\n";
 	
-	ausgabe<<"Assists: "<<"\n";
-	ausgabe<<"Geschaetzte neue MMR: "<<"\n\n";
+	ausgabe.fill(' ');
+	ausgabe<<char(124)<<std::setw(32)<<"Bezeichnung"<<" "<<char(124);
+	ausgabe<<std::setw(12)<<"Menge"<<" "<<char(124);
+	ausgabe<<std::setw(7)<<"Dim"<<" "<<char(124)<<"\n";
+	
+	ausgabe.fill(char(45));
+	ausgabe<<char(43);
+	ausgabe<<std::setw(34)<<char(43);
+	ausgabe<<std::setw(14)<<char(43);
+	ausgabe<<std::setw(9)<<char(43)<<"\n";
+	
+	char buffer[50];
+	std::string str_wert;
+	
+	ausgabe.fill(' ');
+	for(std::vector<bezWertPaar>::iterator it = liste.begin(); it != liste.end(); it++)
+	{
+		ausgabe<<char(124)<<std::setw(32)<<(it)->bez<<" "<<char(124);
+		ausgabe<<std::setw(12)<<(it)->wert<<" "<<char(124);
+		ausgabe<<std::setw(7)<<(it)->dim<<" "<<char(124)<<"\n";
+		
+		sprintf(buffer, "%0.2f", it->wert);
+		str_wert = buffer;
+		std::replace(str_wert.begin(), str_wert.end(), '.', ',');
+		csvAusgabe<<it->bez<<";"<<str_wert<<";"<<it->dim<<";\n";
+	}
+	
+	ausgabe.fill(char(45));
+	ausgabe<<char(43);
+	ausgabe<<std::setw(34)<<char(43);
+	ausgabe<<std::setw(14)<<char(43);
+	ausgabe<<std::setw(9)<<char(43)<<"\n\n";
+	
+	ausgabe.close();
+	
+	csvAusgabe<<"\n";
+	csvAusgabe.close();
 	
 	return true;
 }
